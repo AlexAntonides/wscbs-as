@@ -1,4 +1,4 @@
 flask
 validators
 pytest
-jwt
+pyjwt

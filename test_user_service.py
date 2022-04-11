@@ -1,7 +1,9 @@
 import json
 import pytest 
 
-from user_service import app as application
+from user_service import app as application, SECRET_KEY, ALGORITHM
+from http import HTTPStatus
+import jwt
 
 USERNAME = "admin"
 PASSWORD = "admin"
@@ -21,5 +23,15 @@ def runner(app):
 
 # ----- Main -----
 def test_main_get(client):
-    response = client.post("/users", data={ 'username': USERNAME, 'password': PASSWORD })
-    assert response.status_code == 200
+    response = client.post("/users", data=json.dumps({ 'username': USERNAME, 'password': PASSWORD }), content_type='application/json')
+    assert response.status_code == HTTPStatus.OK
+
+# ----- Login -----
+def test_login_get(client):
+    response = client.post("/users/login", data=json.dumps({ 'username': USERNAME, 'password': PASSWORD }), content_type='application/json')
+    
+    encoded_jwt = response.json
+    token = jwt.decode(encoded_jwt, SECRET_KEY, algorithm=ALGORITHM)
+
+    assert response.status_code == HTTPStatus.OK
+    assert token.public_id == USERNAME

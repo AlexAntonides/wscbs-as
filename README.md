@@ -27,9 +27,9 @@ python -m pip install -r requirements.txt
 Once the modules have been installed, the project will be ready for deployment. 
 
 ##### 1. Start the Application
-Run the following command to start the application
+Run the following command to start URL Shorterner Service
 ```console   
-python main.py
+python url_shorterner_service.py
 ```
 
 ### Testing

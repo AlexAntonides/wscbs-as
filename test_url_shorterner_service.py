@@ -1,7 +1,7 @@
 import json
 import pytest 
 
-from test_url_shorterner_service import app as application, SHORT_URL_LEN
+from url_shorterner_service import app as application, SHORT_URL_LEN
 
 URL = "https://www.uva.nl/"
 

@@ -24,7 +24,8 @@ def main():
         # Validation check if URL is valid URL
         if url and validators.url(url):
             # Generate a randomised unused key
-            while random_string is not None or random_string in routes:
+            random_string = None
+            while random_string is None or random_string in routes:
                 random_string = str(uuid.uuid4())[:SHORT_URL_LEN]
             routes[random_string] = url
             return Response(f"{random_string}", status=201) # change to enum

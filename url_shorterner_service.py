@@ -28,7 +28,7 @@ def main():
             while random_string is None or random_string in routes:
                 random_string = str(uuid.uuid4())[:SHORT_URL_LEN]
             routes[random_string] = url
-            return Response(f"{random_string}", status=201) # change to enum
+            return Response(f"{random_string}", status=HTTPStatus.CREATED)
         else:
             return Response(f"error", status=HTTPStatus.BAD_REQUEST)
    else:

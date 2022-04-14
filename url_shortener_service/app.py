@@ -4,18 +4,36 @@ import json
 import validators
 from flask import Flask, Response, request, redirect
 from http import HTTPStatus
+import requests
 
 app = Flask(__name__)
-routes = {}
+routes = {} # { username, route }
 
 SHORT_URL_LEN = 8
 
 @app.route('/', methods=['GET', 'POST', 'DELETE'])
 def main():
-   if request.method == 'GET':
+    if request.method == 'GET':
         # return all keys
         return Response(f"{json.dumps(list(routes.keys()))}", status=HTTPStatus.OK)
-   elif request.method == 'POST':
+    elif request.method == 'POST':
+        token = None
+
+        if 'Authorization: Bearer' in request.headers:
+            token = request.headers.split(' ')[:-1]
+        
+        if not token:
+            print("TOKEN NEEDED")
+            return Response(status=HTTPStatus.FORBIDDEN)
+  
+        try:
+            # decoding the payload to fetch the stored details
+            print(token)
+            response = requests.post('http://user_service/users/validate', token)
+            print(response)
+        except:
+            return Response(status=HTTPStatus.FORBIDDEN)
+
         url = request.data
 
         if url: 
@@ -31,7 +49,7 @@ def main():
             return Response(f"{random_string}", status=HTTPStatus.CREATED)
         else:
             return Response(f"error", status=HTTPStatus.BAD_REQUEST)
-   else:
+    else:
         return Response(status=HTTPStatus.NOT_FOUND)
 
 @app.route('/<id>', methods=['GET', 'PUT', 'DELETE'])

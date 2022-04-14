@@ -1,7 +1,7 @@
 import json
 import pytest 
 
-from user_service import app as application, SECRET_KEY, ALGORITHM
+from app import app as application, validate_token
 from http import HTTPStatus
 import jwt
 
@@ -22,16 +22,25 @@ def runner(app):
     return app.test_cli_runner()
 
 # ----- Main -----
-def test_main_get(client):
+def test_main_post(client):
     response = client.post("/users", data=json.dumps({ 'username': USERNAME, 'password': PASSWORD }), content_type='application/json')
     assert response.status_code == HTTPStatus.OK
 
 # ----- Login -----
-def test_login_get(client):
+def test_login_post(client):
     response = client.post("/users/login", data=json.dumps({ 'username': USERNAME, 'password': PASSWORD }), content_type='application/json')
     
-    encoded_jwt = response.json
-    token = jwt.decode(encoded_jwt, SECRET_KEY, algorithm=ALGORITHM)
+    sub = validate_token(response.data)
 
     assert response.status_code == HTTPStatus.OK
-    assert token.public_id == USERNAME
+    assert sub == USERNAME
+
+def test_login_faulty_password_post(client):
+    response = client.post("/users/login", data=json.dumps({ 'username': USERNAME, 'password': 'wrong_password' }), content_type='application/json')
+
+    assert response.status_code == HTTPStatus.FORBIDDEN
+
+def test_login_faulty_username_post(client):
+    response = client.post("/users/login", data=json.dumps({ 'username': 'wrong_username', 'password': PASSWORD }), content_type='application/json')
+
+    assert response.status_code == HTTPStatus.FORBIDDEN

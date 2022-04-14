@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+    proxy:
+        container_name: proxy
+        hostname: proxy
+        image: nginx:alpine
+        volumes:
+            - ./configuration/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - 80:80
+        networks:
+            - service
+        tty: true
+    
+    url_shortener_service:
+        container_name: url_shortener_service
+        hostname: url_shortener_service
+        restart: unless-stopped
+        build: 
+            context: ./url_shortener_service
+            target: production_stage
+        volumes:
+            - ./url_shortener_service:/app
+        networks:
+            - service
+        environment:
+            - FLASK_ENV=development
+
+    user_service:
+        container_name: user_service
+        hostname: user_service
+        restart: unless-stopped
+        build: 
+            context: ./user_service
+            target: production_stage
+        volumes:
+            - ./user_service:/app
+        networks:
+            - service
+        environment:
+            - FLASK_ENV=development
+
+networks:
+    service:

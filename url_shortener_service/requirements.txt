@@ -1,0 +1,5 @@
+flask
+validators
+pytest
+pyjwt
+requests

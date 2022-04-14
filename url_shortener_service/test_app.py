@@ -24,10 +24,13 @@ def runner(app):
 
 # ----- Main -----
 def test_main_get(client):
-    t = client.post("http://user_service:5000", data=json.dumps({ 'username': USERNAME, 'password': PASSWORD }), content_type='application/json')
+    b = client.get("http://user_service:5000/")
+    print(b, b.data)
+
+    t = client.post("http://user_service:5000/users", data=json.dumps({ 'username': USERNAME, 'password': PASSWORD }), content_type='application/json')
     response = client.post("http://user_service:5000/users/login", data=json.dumps({ 'username': USERNAME, 'password': PASSWORD }), content_type='application/json')
-    token = response.data
-    print(t.data)
+    # token = response.data
+    # print(t.data)
 
     LEN = 5
     for i in range(LEN):

@@ -17,22 +17,9 @@ def main():
         # return all keys
         return Response(f"{json.dumps(list(routes.keys()))}", status=HTTPStatus.OK)
     elif request.method == 'POST':
-        token = None
-
-        if 'Authorization: Bearer' in request.headers:
-            token = request.headers.split(' ')[:-1]
-        
-        if not token:
-            print("TOKEN NEEDED")
-            return Response(status=HTTPStatus.FORBIDDEN)
-  
-        try:
-            # decoding the payload to fetch the stored details
-            print(token)
-            response = requests.post('http://user_service/users/validate', token)
-            print(response)
-        except:
-            return Response(status=HTTPStatus.FORBIDDEN)
+        validated = validate_authorization(request)  
+        if (validated != True): 
+            return validated
 
         url = request.data
 
@@ -59,6 +46,10 @@ def handle_id(id):
             url = routes[id]
             return redirect(f"{url}", code=HTTPStatus.MOVED_PERMANENTLY) # http.status.ok 
         elif request.method == 'PUT':
+            validated = validate_authorization(request)  
+            if (validated != True): 
+                return validated
+
             url = request.data
 
             if url: 
@@ -70,10 +61,29 @@ def handle_id(id):
             else:
                 return Response(f"error", status=HTTPStatus.BAD_REQUEST)
         elif request.method == 'DELETE':
+            validated = validate_authorization(request)  
+            if (validated != True): 
+                return validated
+
             del routes[id]
             return Response(status=HTTPStatus.NO_CONTENT)
     else:
-            return Response(status=HTTPStatus.NOT_FOUND)
+        return Response(status=HTTPStatus.NOT_FOUND)
+
+def validate_authorization(request):
+    token = request.headers.get('Authorization')
+    if 'Bearer' in token:
+        token = token.split(" ")[-1]
+    
+    if not token:
+        return Response(status=HTTPStatus.FORBIDDEN)
+
+    # decoding the payload to fetch the stored details
+    response = requests.post('http://user_service:5000/users/validate', json={ "token": token })
+    if (response.status_code == HTTPStatus.OK):
+        return True
+    else:
+        return Response(status=HTTPStatus.FORBIDDEN)
 
 if __name__ == '__main__':
    app.run(debug = True)

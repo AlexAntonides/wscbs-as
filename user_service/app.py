@@ -7,12 +7,15 @@ from http import HTTPStatus
 import jwt
 
 app = Flask(__name__)
-app.debug = True
 users = {}
 
 SALT = "5gz"
 SECRET_KEY = "secret"
 ALGORITHM = "HS256"
+
+@app.route('/', methods=['GET'])
+def a():
+    return Response(status=HTTPStatus.IM_A_TEAPOT)
 
 @app.route('/users', methods=['POST'])
 def main():
@@ -44,7 +47,7 @@ def validate():
         
         if data: 
             token = data['token']
-            return Response(validate_token(token).decode('UTF-8'), status=HTTPStatus.OK)
+            return Response(validate_token(token), status=HTTPStatus.OK)
         else:
             return Response(status=HTTPStatus.BAD_REQUEST)
     else:

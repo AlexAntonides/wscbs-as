@@ -13,10 +13,6 @@ SALT = "5gz"
 SECRET_KEY = "secret"
 ALGORITHM = "HS256"
 
-@app.route('/', methods=['GET'])
-def a():
-    return Response(status=HTTPStatus.IM_A_TEAPOT)
-
 @app.route('/users', methods=['POST'])
 def main():
     if request.method == 'POST':

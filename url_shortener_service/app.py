@@ -18,8 +18,8 @@ def main():
         return Response(f"{json.dumps(list(routes.keys()))}", status=HTTPStatus.OK)
     elif request.method == 'POST':
         validated = validate_authorization(request)  
-        if (validated != True): 
-            return validated
+        if (validated == None):
+            return Response(status=HTTPStatus.FORBIDDEN)
 
         url = request.data
 
@@ -32,7 +32,7 @@ def main():
             random_string = None
             while random_string is None or random_string in routes:
                 random_string = str(uuid.uuid4())[:SHORT_URL_LEN]
-            routes[random_string] = url
+            routes[random_string] = { 'owner': validated, 'url': url } 
             return Response(f"{random_string}", status=HTTPStatus.CREATED)
         else:
             return Response(f"error", status=HTTPStatus.BAD_REQUEST)
@@ -43,12 +43,15 @@ def main():
 def handle_id(id):
     if id in routes:
         if request.method == 'GET':
-            url = routes[id]
+            url = routes[id]['url']
             return redirect(f"{url}", code=HTTPStatus.MOVED_PERMANENTLY) # http.status.ok 
         elif request.method == 'PUT':
             validated = validate_authorization(request)  
-            if (validated != True): 
-                return validated
+            if (validated == None): 
+                return Response(status=HTTPStatus.FORBIDDEN)
+
+            if routes[id]['owner'] != validated:
+                return Response(status=HTTPStatus.FORBIDDEN)
 
             url = request.data
 
@@ -56,14 +59,17 @@ def handle_id(id):
                 url = url.decode("utf-8")
 
             if url and validators.url(url):
-                routes[id] = url
+                routes[id]['url'] = url
                 return Response(status=HTTPStatus.OK)
             else:
                 return Response(f"error", status=HTTPStatus.BAD_REQUEST)
         elif request.method == 'DELETE':
             validated = validate_authorization(request)  
-            if (validated != True): 
-                return validated
+            if (validated == None): 
+                return Response(status=HTTPStatus.FORBIDDEN)
+
+            if routes[id]['owner'] != validated:
+                return Response(status=HTTPStatus.FORBIDDEN)
 
             del routes[id]
             return Response(status=HTTPStatus.NO_CONTENT)
@@ -76,14 +82,14 @@ def validate_authorization(request):
         token = token.split(" ")[-1]
     
     if not token:
-        return Response(status=HTTPStatus.FORBIDDEN)
+        return None
 
     # decoding the payload to fetch the stored details
     response = requests.post('http://user_service:5000/users/validate', json={ "token": token })
     if (response.status_code == HTTPStatus.OK):
-        return True
+        return response.text
     else:
-        return Response(status=HTTPStatus.FORBIDDEN)
+        return None
 
 if __name__ == '__main__':
    app.run(debug = True)

@@ -64,7 +64,7 @@ def login():
                 hash = hashlib.md5(password.encode())
                 if hash.digest() == user['password'].digest():
                     token = encode_auth_token(user)
-                    return Response(token, status=HTTPStatus.OK)
+                    return Response(token, status=HTTPStatus.OK) 
                 else:
                     return Response(status=HTTPStatus.FORBIDDEN)
             else:

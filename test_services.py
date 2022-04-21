@@ -49,4 +49,5 @@ def test_a_long_function_because_i_am_lazy():
 
     admin_put_admin_url_response = requests.put(f"{BASE_URL}/{admin_short_code}", data=admin_url, headers={"Authorization": f"Bearer {admin_token}"})
     assert admin_put_admin_url_response.status_code == HTTPStatus.OK
-    
+
+    print("\n", f"http://localhost/{admin_short_code}", "\n", f"http://localhost/{user_short_code}")

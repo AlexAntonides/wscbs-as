@@ -36,19 +36,6 @@ def main():
     else:
         return Response(status=HTTPStatus.NOT_FOUND)
 
-@app.route('/users/validate', methods=['POST'])
-def validate():
-    if request.method == 'POST':
-        data = request.json
-        
-        if data: 
-            token = data['token']
-            return Response(validate_token(token), status=HTTPStatus.OK)
-        else:
-            return Response(status=HTTPStatus.BAD_REQUEST)
-    else:
-        return Response(status=HTTPStatus.NOT_FOUND)
-
 @app.route('/users/login', methods=['POST'])
 def login():
     if request.method == 'POST':
@@ -73,6 +60,19 @@ def login():
             return Response(status=HTTPStatus.FORBIDDEN)
     else:
         return Response(status=HTTPStatus.NOT_FOUND)
+        
+@app.route('/users/validate', methods=['POST'])
+def validate():
+    if request.method == 'POST':
+        data = request.json
+        
+        if data: 
+            token = data['token']
+            return Response(validate_token(token), status=HTTPStatus.OK)
+        else:
+            return Response(status=HTTPStatus.BAD_REQUEST)
+    else:
+        return Response(status=HTTPStatus.NOT_FOUND)
 
 def encode_auth_token(user):
     """
@@ -80,9 +80,9 @@ def encode_auth_token(user):
     :return: string
     """
     payload = {
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=1),
-        'iat': datetime.datetime.utcnow(),
-        'sub': user['username']
+        'iat': datetime.datetime.utcnow(),                                              # Issued At
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=1),      # Expiration Date
+        'sub': user['username']                                                         # Subject
     }
 
     return jwt.encode(

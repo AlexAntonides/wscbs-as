@@ -5,8 +5,11 @@ metadata:
   labels:
     run: user-service
 spec:
-  ports:
-  - port: 5000
-    protocol: TCP
+  type: NodePort
   selector:
-    run: user-service
+    run: user-service 
+  ports:
+  - port: 5001
+    targetPort: 5000
+  externalIPs:
+    - 145.100.134.49

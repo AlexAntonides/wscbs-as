@@ -5,8 +5,11 @@ metadata:
   labels:
     run: url-shortener-service
 spec:
-  ports:
-  - port: 5000
-    protocol: TCP
+  type: NodePort
   selector:
     run: url-shortener-service
+  ports:
+  - port: 5000
+    targetPort: 5000
+  externalIPs:
+    - 145.100.134.49

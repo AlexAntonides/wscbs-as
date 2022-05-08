@@ -23,7 +23,6 @@ ENV PATH=/root/.local/bin:$PATH
 
 # create the app directory
 RUN mkdir -p /app/
-RUN pip install pytest
 
 # set the work directory to the newly created directory.
 WORKDIR /app/

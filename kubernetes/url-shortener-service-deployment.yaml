@@ -1,44 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.26.0 (40646f47)
-  creationTimestamp: null
+  name: url-shortener-service-deployment
   labels:
-    io.kompose.service: url-shortener-service
-  name: url-shortener-service
+    app: url-shortener-service
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      io.kompose.service: url-shortener-service
-  strategy:
-    type: Recreate
+      app: url-shortener-service
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.26.0 (40646f47)
-      creationTimestamp: null
       labels:
-        io.kompose.network/service: "true"
-        io.kompose.service: url-shortener-service
+        app: url-shortener-service
     spec:
       containers:
-        - env:
-            - name: FLASK_ENV
-              value: development
-          image: url-shortener-service
-          name: url-shortener-service
-          resources: {}
-          volumeMounts:
-            - mountPath: /app
-              name: url-shortener-service-claim0
-      hostname: url_shortener_service
-      restartPolicy: Always
-      volumes:
-        - name: url-shortener-service-claim0
-          persistentVolumeClaim:
-            claimName: url-shortener-service-claim0
-status: {}
+      - name: url-shortener-service
+        image: alexantonides/wscbs-url-shortener-service

@@ -1,44 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.26.0 (40646f47)
-  creationTimestamp: null
+  name: user-service-deployment
   labels:
-    io.kompose.service: user-service
-  name: user-service
+    app: user-service
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      io.kompose.service: user-service
-  strategy:
-    type: Recreate
+      app: user-service
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.26.0 (40646f47)
-      creationTimestamp: null
       labels:
-        io.kompose.network/service: "true"
-        io.kompose.service: user-service
+        app: user-service
     spec:
       containers:
-        - env:
-            - name: FLASK_ENV
-              value: development
-          image: user-service
-          name: user-service
-          resources: {}
-          volumeMounts:
-            - mountPath: /app
-              name: user-service-claim0
-      hostname: user_service
-      restartPolicy: Always
-      volumes:
-        - name: user-service-claim0
-          persistentVolumeClaim:
-            claimName: user-service-claim0
-status: {}
+      - name: user-service
+        image: alexantonides/wscbs-user-service

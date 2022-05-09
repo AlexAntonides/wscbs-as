@@ -9,7 +9,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: / # if path / is used, point toowards url-shortener-service
+      - path: / # if path / is used, point towards url-shortener-service
         pathType: Prefix
         backend:
           service:

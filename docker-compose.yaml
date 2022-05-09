@@ -26,6 +26,7 @@ services:
             - service
         environment:
             - FLASK_ENV=development # so we can reload on file save
+            - USER_SERVICE_PATH=user_service:5000
 
     user_service:
         container_name: user_service

@@ -25,7 +25,10 @@ ENV PATH=/root/.local/bin:$PATH
 RUN mkdir -p /app/
 RUN pip install pytest
 
+COPY ./app.py /app/app.py
+
 # set the work directory to the newly created directory.
 WORKDIR /app/
 
+EXPOSE 5000
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]

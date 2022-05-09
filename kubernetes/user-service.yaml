@@ -5,11 +5,11 @@ metadata:
   labels:
     run: user-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
-    run: user-service 
+    app: user-service-deployment
   ports:
-  - port: 5001
+  - port: 5000
     targetPort: 5000
     nodePort: 32411
 ---
@@ -18,17 +18,17 @@ kind: Deployment
 metadata:
   name: user-service-deployment
   labels:
-    app: user-service
+    app: user-service-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: user-service
+      app: user-service-deployment
   template:
     metadata:
       labels:
-        app: user-service
+        app: user-service-deployment
     spec:
       containers:
-      - name: user-service
+      - name: wscbs-user-service
         image: alexantonides/wscbs-user-service

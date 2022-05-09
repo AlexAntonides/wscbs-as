@@ -1,3 +1,5 @@
+import os
+
 import uuid
 import json
 
@@ -9,6 +11,7 @@ import requests
 app = Flask(__name__)
 routes = {} # { username, route }
 
+USER_SERVICE_PATH = os.getenv('USER_SERVICE_PATH')
 SHORT_URL_LEN = 8
 
 @app.route('/', methods=['GET', 'POST', 'DELETE'])
@@ -85,7 +88,7 @@ def validate_authorization(request):
         return None
 
     # decoding the payload to fetch the stored details
-    response = requests.post('http://user_service:5000/users/validate', json={ "token": token })
+    response = requests.post(f'http://{USER_SERVICE_PATH}/users/validate', json={ "token": token })
     if (response.status_code == HTTPStatus.OK):
         return response.text
     else:

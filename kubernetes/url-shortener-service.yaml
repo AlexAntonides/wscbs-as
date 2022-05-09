@@ -1,28 +1,26 @@
 apiVersion: v1
-kind: Service
+kind: Service # define the service type
 metadata:
-  name: url-shortener-service
+  name: url-shortener-service # name of the service
   labels:
-    run: url-shortener-service
-spec:
-  type: NodePort
+    run: url-shortener-service 
+spec: 
+  type: NodePort # nodeport, so the port gets exposed externally
   selector:
-    run: url-shortener-service
+    run: url-shortener-service-deployment # target the deployment
   ports:
-  - port: 5000
-    targetPort: 5000
-    nodePort: 32410
-  externalIPs:
-    - 145.100.134.49
+  - port: 5000 # port
+    targetPort: 5000 
+    nodePort: 32410 # exposed port
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: Deployment # define the deployment type
 metadata:
   name: url-shortener-service-deployment
   labels:
-    app: url-shortener-service
+    app: url-shortener-service-deployment
 spec:
-  replicas: 3
+  replicas: 3 # create 3 pods for this service
   selector:
     matchLabels:
       app: url-shortener-service
@@ -32,8 +30,8 @@ spec:
         app: url-shortener-service
     spec:
       containers:
-      - name: url-shortener-service
-        image: alexantonides/wscbs-url-shortener-service
+      - name: url-shortener-service-deployment
+        image: alexantonides/wscbs-url-shortener-service # use this image
         ports:
-        - containerPort: 5000
+        - containerPort: 5000 # opening the port 5000
           protocol: TCP

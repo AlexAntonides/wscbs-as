@@ -1,5 +1,5 @@
 apiVersion: networking.k8s.io/v1
-kind: Ingress
+kind: Ingress 
 metadata:
   name: ingress
   annotations:
@@ -9,14 +9,14 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: / # if path / is used, point toowards url-shortener-service
         pathType: Prefix
         backend:
           service:
             name: url-shortener-service
             port:
               number: 5000
-      - path: /users
+      - path: /users # if path /users is used, point toowards user-service
         pathType: Prefix
         backend:
           service:

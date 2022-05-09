@@ -5,15 +5,13 @@ metadata:
   labels:
     run: user-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     run: user-service 
   ports:
   - port: 5001
     targetPort: 5000
     nodePort: 32411
-  externalIPs:
-    - 145.100.134.49
 ---
 apiVersion: apps/v1
 kind: Deployment

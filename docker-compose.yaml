@@ -10,22 +10,22 @@ services:
             - 80:80
         networks: # in the network service so it can access the other two services
             - service
-        tty: true # 
+        tty: true # keep the container running
     
     url_shortener_service:
         container_name: url_shortener_service
         hostname: url_shortener_service
-        restart: unless-stopped
+        restart: unless-stopped # keep restarting the service if it breaks down
         build: 
-            context: ./url_shortener_service
-            target: production_stage
-        image: alexantonides/wscbs-url-shortener-service
+            context: ./url_shortener_service # build from the folder ./url_shortener_service
+            target: production_stage # there are two stages, so target the production (final) stage
+        image: alexantonides/wscbs-url-shortener-service # target this image when pushing
         volumes:
-            - ./url_shortener_service:/app
+            - ./url_shortener_service:/app # make sure that the source code is available in the container + allows reloading
         networks:
             - service
         environment:
-            - FLASK_ENV=development
+            - FLASK_ENV=development # so we can reload on file save
 
     user_service:
         container_name: user_service

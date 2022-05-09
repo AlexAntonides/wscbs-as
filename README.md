@@ -4,28 +4,16 @@ These instructions will get you a copy up and running on your local machine for 
 ### Prerequisites
 ##### 1. Install the following software:
 - [ ] [Docker](https://www.docker.com/)
-- [ ] (Optional) [Python](https://www.python.org/)
+- [ ] [Kubernetes](https://kubernetes.io/)
 
 ### Installing
 A step by step series of examples that tell you how to get a development environment running.
 
+#### A. Docker
 ##### 1. Installing the modules
 After cloning the repository, navigate to the project folder and run the following command: 
 ```console
 docker-compose build
-```
-
-If you're planning to test the services, use the following commands:
-```console   
-python -m pip install pytest
-python -m pip install requests
-python -m pip install faker
-```
-
-or 
-
-```console   
-python -m pip install -r requirements.txt
 ```
 
 ### Deployment
@@ -37,11 +25,28 @@ Run the following command to start URL Shorterner Service
 docker-compose up
 ```
 
-### Testing
-The application is also suitable for testing.
-
-##### 1. Test the Application
-Run the following command to test the application.
-```console   
-pytest
+#### B. Kubernetes
+##### 1. (Optional) Push to Docker Hub
+You could use the standard image provided in the docker-compose, but if you would like to use your own images, change the image in the docker-composess to point towards your docker hub and use the following command to push the images:
+```console
+docker-compose push
+```
+##### 2. Kubernetes and Docker Hub  Image
+Open the ./kubernetes/*.yaml files and validate the image path under spec/containers, so that it points towards the docker-hub image. See the example  below.
+```yaml
+spec:
+    [...]
+    template:
+        [...]
+        spec:
+            containers:
+                [...]
+                image: docker-hub-id/image
+```
+##### 3. Kubernetes Pods
+Finally, use the kubectl commands to build the Kubernetes pods.
+```console
+kubectl apply -f ./kubernetes/proxy.yaml
+kubectl apply -f ./kubernetes/url-shortener-service.yaml
+kubectl apply -f ./kubernetes/user-service.yaml
 ```

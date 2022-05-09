@@ -22,4 +22,4 @@ spec:
           service:
             name: user-service
             port:
-              number: 5000
+              number: 5001

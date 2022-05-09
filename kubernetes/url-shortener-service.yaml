@@ -11,5 +11,29 @@ spec:
   ports:
   - port: 5000
     targetPort: 5000
+    nodePort: 32410
   externalIPs:
     - 145.100.134.49
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shortener-service-deployment
+  labels:
+    app: url-shortener-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: url-shortener-service
+  template:
+    metadata:
+      labels:
+        app: url-shortener-service
+    spec:
+      containers:
+      - name: url-shortener-service
+        image: alexantonides/wscbs-url-shortener-service
+        ports:
+        - containerPort: 5000
+          protocol: TCP
